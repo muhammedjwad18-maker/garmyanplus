@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ckb" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GarmyanPlus</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#c8102e; --red-dark:#8b0a1f; --yellow:#ffd700;
+  --bg:#f4f3df; --surface:#ffffff; --text:#1d1d1f; --muted:#6b6b70; --line:#e6e3c8;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){--bg:#17110f;--surface:#241a18;--text:#f3eeee;--muted:#b3a8a6;--line:#3a2d2a;}
+}
+:root[data-theme="dark"]{--bg:#17110f;--surface:#241a18;--text:#f3eeee;--muted:#b3a8a6;--line:#3a2d2a;}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Noto Sans Arabic",Tahoma,Arial,sans-serif;line-height:1.8}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1100px;margin:0 auto;padding:0 16px}
+
+header{background:var(--red);color:#fff;position:sticky;top:env(safe-area-inset-top,0px);z-index:20;box-shadow:0 2px 10px rgba(0,0,0,.2)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--red);z-index:30}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 0}
+.logo{font-size:28px;font-weight:800;direction:ltr;letter-spacing:.5px}
+.logo span{color:var(--yellow)}
+nav{display:flex;gap:4px;flex-wrap:wrap}
+nav a{padding:6px 12px;border-radius:999px;font-weight:600;font-size:16px;color:#fff}
+nav a:hover{background:rgba(255,255,255,.18)}
+.menu-btn{display:none;background:none;border:0;color:#fff;font-size:30px;cursor:pointer}
+@media(max-width:760px){
+  .menu-btn{display:block}
+  nav{display:none;position:absolute;inset:100% 0 auto;background:var(--red-dark);flex-direction:column;padding:10px 16px}
+  nav.open{display:flex}
+}
+
+.hero{display:grid;grid-template-columns:1.6fr 1fr;gap:16px;margin:24px 0}
+@media(max-width:860px){.hero{grid-template-columns:1fr}}
+.card{background:var(--surface);border-radius:18px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.thumb{aspect-ratio:16/9;background:linear-gradient(135deg,var(--red),var(--red-dark));display:flex;align-items:center;justify-content:center;font-size:44px;color:var(--yellow);font-weight:800;direction:ltr}
+.card .body{padding:16px}
+.tag{display:inline-block;background:var(--yellow);color:#3a2f00;font-weight:700;font-size:13px;padding:0 10px;border-radius:999px}
+.card h2,.card h3{margin:8px 0 4px;line-height:1.5}
+.card h2{font-size:26px}
+.card h3{font-size:18px}
+.meta{color:var(--muted);font-size:13px}
+.side{display:grid;gap:12px}
+.side .card .body{padding:12px 16px}
+
+.sec{display:flex;align-items:center;gap:12px;margin:32px 0 14px}
+.sec h2{margin:0;font-size:24px}
+.sec::after{content:"";flex:1;height:4px;border-radius:4px;background:linear-gradient(to left,var(--yellow),var(--red))}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+.grid .thumb{font-size:30px}
+
+.sub{background:var(--red);color:#fff;border-radius:18px;padding:24px;margin:36px 0;text-align:center}
+.sub h2{margin:0 0 6px}
+.sub form{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.sub input{padding:10px 16px;border-radius:999px;border:0;min-width:240px;font:inherit}
+.sub button{padding:10px 22px;border-radius:999px;border:0;background:var(--yellow);color:#3a2f00;font:inherit;font-weight:800;cursor:pointer}
+#msg{margin-top:10px;min-height:1.6em;font-weight:600}
+
+
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0 0}
+.chip{border:0;padding:6px 16px;border-radius:999px;background:var(--surface);color:var(--text);font:inherit;font-weight:600;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.chip.on{background:var(--red);color:#fff}
+.empty{background:var(--surface);border-radius:18px;padding:40px 16px;text-align:center;color:var(--muted);margin:24px 0}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.card{cursor:pointer;display:block}
+.del{border:0;background:#fde8ea;color:var(--red);border-radius:999px;padding:2px 12px;font:inherit;font-size:13px;cursor:pointer;margin-inline-start:8px}
+#adminBtn{display:none;background:var(--yellow);color:#3a2f00;border:0;border-radius:999px;padding:6px 16px;font:inherit;font-weight:800;cursor:pointer}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:flex-start;justify-content:center;overflow:auto;padding:24px 12px;z-index:50}
+.modal.on{display:flex}
+.box{background:var(--surface);color:var(--text);border-radius:18px;max-width:720px;width:100%;padding:20px;position:relative}
+.box h2{margin:8px 0}
+.box .x{position:absolute;top:10px;left:12px;border:0;background:none;font-size:26px;cursor:pointer;color:var(--muted)}
+.box img.cover{width:100%;border-radius:12px;margin:8px 0}
+.box .txt{white-space:pre-wrap}
+.fld{display:block;width:100%;margin:8px 0;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--text);font:inherit}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.pub{padding:10px 24px;border:0;border-radius:999px;background:var(--red);color:#fff;font:inherit;font-weight:800;cursor:pointer}
+.pub:disabled{opacity:.5}
+.note{color:var(--muted);font-size:14px}
+footer{background:var(--red-dark);color:#fff;padding:24px 0;margin-top:40px;text-align:center}
+footer .logo{font-size:24px}
+.social{display:flex;gap:10px;justify-content:center;margin:10px 0}
+.social a{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-weight:700}
+.social a:hover{background:var(--yellow);color:#3a2f00}
+#top{position:fixed;bottom:calc(20px + env(safe-area-inset-bottom,0px));left:20px;width:42px;height:42px;border-radius:50%;border:0;background:var(--red);color:#fff;font-size:22px;cursor:pointer;display:none;z-index:25}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <a href="#" class="logo">Garmyan<span>Plus</span></a>
+    <button id="adminBtn">ئەدمین</button>
+    <button class="menu-btn" id="mb" aria-label="مێنیو">&#9776;</button>
+    <nav id="nav">
+      <a href="#">سەرەتا</a><a href="#news">هەواڵ</a><a href="#shows">بەرنامە</a>
+      <a href="#reports">ڕاپۆرت</a><a href="#sub">پەیوەندی</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="chips" id="chips"></div>
+  <div id="content"></div>
+  <section class="sub" id="sub">
+    <h2>هەواڵە نوێیەکان وەربگرە</h2>
+    <div>ئیمەیڵەکەت بنووسە تا نوێترین هەواڵەکانت بۆ بنێرین</div>
+    <form id="f"><input type="email" id="em" placeholder="ئیمەیڵ" required><button type="submit">ئەندام بە</button></form>
+    <div id="msg"></div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="logo">Garmyan<span>Plus</span></div>
+    <div class="social"><a href="#">f</a><a href="#">in</a><a href="#">yt</a><a href="#">tg</a></div>
+    <div>GarmyanPlus &copy; 2026</div>
+  </div>
+</footer>
+
+<div class="modal" id="viewM"><div class="box"><button class="x" data-close>&times;</button><div id="viewBody"></div></div></div>
+<div class="modal" id="loginM"><div class="box" style="max-width:380px">
+  <button class="x" data-close>&times;</button>
+  <h2 id="lgTitle">چوونەژوورەوە</h2>
+  <input class="fld" id="lu" placeholder="ناوی بەکارهێنەر (یوزەر)" autocomplete="username">
+  <input class="fld" id="lp" type="password" placeholder="وشەی نهێنی (پاس)" autocomplete="current-password">
+  <div class="row"><button class="pub" id="lgBtn">چوونەژوورەوە</button><span class="note" id="lgMsg"></span></div>
+</div></div>
+<div class="modal" id="adminM"><div class="box">
+  <button class="x" data-close>&times;</button>
+  <h2>پۆستی نوێ</h2>
+  <input class="fld" id="pt" placeholder="ناونیشان" maxlength="150">
+  <select class="fld" id="pc"><option>هەواڵ</option><option>بەرنامە</option><option>ڕاپۆرت</option></select>
+  <textarea class="fld" id="pb" rows="8" placeholder="دەقی پۆستەکە"></textarea>
+  <div class="row"><input type="file" id="pi" accept="image/*"><span class="note" id="piNote"></span></div>
+  <div class="row" style="margin-top:12px"><button class="pub" id="pubBtn">بڵاوکردنەوە</button><span class="note" id="pubMsg"></span></div>
+  <hr style="border:0;border-top:1px solid var(--line);margin:18px 0">
+  <div class="row"><input class="fld" id="np" type="password" placeholder="وشەی نهێنی نوێ" style="flex:1;margin:0"><button class="chip" id="npBtn">گۆڕین</button><button class="chip" id="outBtn">دەرچوون</button></div>
+  <span class="note" id="npMsg"></span>
+</div></div>
+<button id="top" aria-label="سەرەوە">&uarr;</button>
+
+<script>
+var CATS=['هەموو','هەواڵ','بەرنامە','ڕاپۆرت'], cat='هەموو', posts=[], db=null, assets=null, isAdmin=false, loaded=false;
+var $=function(i){return document.getElementById(i)};
+function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+
+$('mb').onclick=function(){$('nav').classList.toggle('open')};
+document.querySelectorAll('#nav a').forEach(function(a){a.onclick=function(){$('nav').classList.remove('open')}});
+var t=$('top');
+window.addEventListener('scroll',function(){t.style.display=window.scrollY>200?'block':'none'});
+t.onclick=function(){window.scrollTo({top:0,behavior:'smooth'})};
+$('f').onsubmit=function(e){e.preventDefault();$('msg').textContent='سوپاس! ئیمەیڵەکەت وەرگیرا.';this.reset()};
+document.querySelectorAll('[data-close]').forEach(function(b){b.onclick=function(){b.closest('.modal').classList.remove('on')}});
+document.querySelectorAll('.modal').forEach(function(m){m.onclick=function(e){if(e.target===m)m.classList.remove('on')}});
+
+function fmt(ts){try{return new Date(ts).toLocaleDateString('ar-IQ',{year:'numeric',month:'2-digit',day:'2-digit'})}catch(e){return ''}}
+
+function chips(){
+  var c=$('chips');c.textContent='';
+  CATS.forEach(function(n){var b=el('button','chip'+(n===cat?' on':''),n);b.onclick=function(){cat=n;chips();render()};c.appendChild(b)});
+}
+
+function card(p,big){
+  var c=el('div','card');
+  var th=el('div','thumb');
+  if(p.img){var im=document.createElement('img');im.src=p.img;im.alt='';th.appendChild(im)}else th.textContent='GP';
+  var bd=el('div','body');
+  bd.appendChild(el('span','tag',p.cat||'هەواڵ'));
+  bd.appendChild(el(big?'h2':'h3','',p.title));
+  var m=el('div','meta',fmt(p.ts));
+  if(isAdmin&&authed){var d=el('button','del','سڕینەوە');d.onclick=function(e){e.stopPropagation();if(confirm('ئەم پۆستە دەسڕدرێتەوە؟'))db.collection('posts').doc(p.id).delete()};m.appendChild(d)}
+  bd.appendChild(m);
+  c.appendChild(th);c.appendChild(bd);
+  c.onclick=function(){openPost(p)};
+  return c;
+}
+
+function openPost(p){
+  var v=$('viewBody');v.textContent='';
+  v.appendChild(el('span','tag',p.cat||'هەواڵ'));
+  v.appendChild(el('h2','',p.title));
+  v.appendChild(el('div','meta',fmt(p.ts)));
+  if(p.img){var im=document.createElement('img');im.src=p.img;im.className='cover';im.alt='';v.appendChild(im)}
+  v.appendChild(el('div','txt',p.body||''));
+  $('viewM').classList.add('on');
+}
+
+function render(){
+  var c=$('content');c.textContent='';
+  var list=posts.filter(function(p){return cat==='هەموو'||p.cat===cat});
+  if(!list.length){
+    c.appendChild(el('div','empty',!loaded?'خەریکی بارکردنە...':(db?'هیچ پۆستێک نییە لەم بەشەدا.':'پۆستەکان تەنها دوای چوونەژوورەوە دەبینرێن.')));
+    return;
+  }
+  var hero=el('section','hero');
+  hero.appendChild(card(list[0],true));
+  var side=el('div','side');
+  list.slice(1,4).forEach(function(p){side.appendChild(card(p,false))});
+  hero.appendChild(side);
+  c.appendChild(hero);
+  var rest=list.slice(4);
+  if(rest.length){
+    var h=el('div','sec');h.appendChild(el('h2','','کۆنتر'));c.appendChild(h);
+    var g=el('div','grid');rest.forEach(function(p){g.appendChild(card(p,false))});c.appendChild(g);
+  }
+}
+
+chips();render();
+
+(async function(){
+  try{
+    db=await claude.use('db');
+    var user=await claude.use('user');
+    assets=await claude.use('assets');
+    isAdmin=user?await user.canEdit():false;
+  }catch(e){}
+  if(isAdmin)$('adminBtn').style.display='inline-block';
+  if(!db){loaded=true;render();return}
+  db.collection('posts').orderBy('ts','desc').limit(100).onSnapshot(function(snap){
+    posts=snap.docs.map(function(d){var x=d.data();x.id=d.id;return x});
+    loaded=true;render();
+  },function(){loaded=true;render()});
+})();
+
+var authed=false, cfg=null;
+try{authed=sessionStorage.getItem('gp_auth')==='1'}catch(e){}
+async function sha(x){var b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(x));return Array.from(new Uint8Array(b)).map(function(n){return n.toString(16).padStart(2,'0')}).join('')}
+function rnd(){var a=new Uint8Array(16);crypto.getRandomValues(a);return Array.from(a).map(function(n){return n.toString(16).padStart(2,'0')}).join('')}
+async function loadCfg(){try{var d=await db.doc('config/admin').get();cfg=d.exists?d.data():null}catch(e){cfg=null}}
+$('adminBtn').onclick=async function(){
+  if(authed){$('pubMsg').textContent='';$('adminM').classList.add('on');return}
+  await loadCfg();
+  $('lgTitle').textContent=cfg?'چوونەژوورەوە':'دروستکردنی ئەکاونتی ئەدمین';
+  $('lgBtn').textContent=cfg?'چوونەژوورەوە':'دروستکردن';
+  $('lgMsg').textContent='';$('lp').value='';
+  $('loginM').classList.add('on');
+};
+$('lgBtn').onclick=async function(){
+  var u=$('lu').value.trim(), p=$('lp').value, m=$('lgMsg');
+  if(!u||p.length<6){m.textContent='یوزەر و پاس (٦ پیت یان زیاتر) پێویستن.';return}
+  try{
+    if(!cfg){
+      var salt=rnd();
+      await db.doc('config/admin').set({user:u,salt:salt,hash:await sha(salt+p)});
+      cfg={user:u,salt:salt};
+    }else{
+      var ok=u===cfg.user && (await sha(cfg.salt+p))===cfg.hash;
+      if(!ok){m.textContent='یوزەر یان پاس هەڵەیە.';return}
+    }
+    authed=true;try{sessionStorage.setItem('gp_auth','1')}catch(e){}
+    $('loginM').classList.remove('on');$('adminM').classList.add('on');render();
+  }catch(e){m.textContent='هەڵە: نەتوانرا'}
+};
+$('npBtn').onclick=async function(){
+  var p=$('np').value, m=$('npMsg');
+  if(p.length<6){m.textContent='وشەی نهێنی دەبێت ٦ پیت یان زیاتر بێت.';return}
+  try{
+    await loadCfg();var salt=rnd();
+    await db.doc('config/admin').set({user:cfg?cfg.user:$('lu').value.trim(),salt:salt,hash:await sha(salt+p)});
+    $('np').value='';m.textContent='وشەی نهێنی گۆڕدرا.';
+  }catch(e){m.textContent='هەڵە: نەتوانرا بگۆڕدرێت'}
+};
+$('outBtn').onclick=function(){authed=false;try{sessionStorage.removeItem('gp_auth')}catch(e){}$('adminM').classList.remove('on');render()};
+$('pi').onchange=function(){$('piNote').textContent=this.files[0]?this.files[0].name:''};
+$('pubBtn').onclick=async function(){
+  var title=$('pt').value.trim(), body=$('pb').value.trim(), msg=$('pubMsg');
+  if(!title||!body){msg.textContent='ناونیشان و دەق پێویستن.';return}
+  var btn=this;btn.disabled=true;msg.textContent='خەریکی بڵاوکردنەوەیە...';
+  try{
+    var img='';
+    var f=$('pi').files[0];
+    if(f){
+      if(!assets)throw new Error('نەتوانرا وێنە باربکرێت');
+      var r=await assets.upload(f);img=r.url;
+    }
+    await db.collection('posts').add({title:title,cat:$('pc').value,body:body,img:img,ts:Date.now()});
+    $('pt').value='';$('pb').value='';$('pi').value='';$('piNote').textContent='';
+    $('adminM').classList.remove('on');
+  }catch(e){msg.textContent='هەڵە: '+(e&&e.message?e.message:'نەتوانرا بڵاوبکرێتەوە')}
+  btn.disabled=false;
+};
+</script>
+</body>
+</html>
